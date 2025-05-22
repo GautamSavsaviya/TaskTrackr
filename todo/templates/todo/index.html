@@ -6,71 +6,23 @@
 
 {% include "todo/add-task.html" %}
 
+{% if messages %}
+{% for message in messages %}
+    <div class="alert alert-success alert-dismissible fade show w-75 mx-auto mt-3" role="alert">
+      <strong>Message: </strong> {{message}}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+{% endfor %}
+{% endif %}
+
 <div class="container-fluid mt-3 px-0">
-  <div class="d-flex h-100">
+  <div class="d-flex">
     <div class="w-25 px-3 py-2" style="background:#e0e0e0">
-      <form action="{% url "filter" %}" method="get">
-
-        <div class="d-flex">
-          <h3>Filters:</h3>
-          <button type="button" class="btn badge text-bg-primary ms-auto" data-bs-toggle="modal" data-bs-target="#addTaskModal">
-            Add +
-          </button>
-        </div>
-        <hr>
-
-        <div>
-          <p>Task Status:</p>
-          <select name="status" class="form-select">
-            <option value="" {% if request.GET.status == "" %}selected{% endif %}>Select status..</option>
-            <option value="TD" {% if request.GET.status == "TD" %}selected{% endif %}>todo</option>
-            <option value="IN" {% if request.GET.status == "IN" %}selected{% endif %}>in-progress</option>
-            <option value="DN" {% if request.GET.status == "DN" %}selected{% endif %}>done</option>
-          </select>
-
-          <hr>
-        </div>
-
-        <div>
-          <button type="submit" class="btn btn-success">Find</button>
-          <button type="button" class="btn btn-danger" onclick="window.location.href='{% url 'home' %}'">Clear Filter</button>
-        </div>
-
-      </form>
+      {% include "todo/filters.html" %}
     </div>
 
     <div class="w-75 ms-2">
-      <table class="table table-striped">
-        <thead>
-          <th>No</th>
-          <th>Title</th>
-          <th>Status</th>
-          <th>Due Date</th>
-          <th>Action</th>
-        </thead>
-        <tbody>
-          {% for task in tasks %}
-          <tr>
-            <td>{{ forloop.counter }}</td>
-            <td>{{ task.title }}</td>
-            <td>
-              {% if task.get_status_display == 'todo' %}
-                <span class="badge text-bg-danger">{{task.get_status_display}}</span>
-              {% elif task.get_status_display == 'in-progress' %}
-                <span class="badge text-bg-warning">{{task.get_status_display}}</span>
-              {% else %}
-                <span class="badge text-bg-success">{{task.get_status_display}}</span>
-              {% endif %}
-            </td>
-            <td>{{ task.due_date }}</td>
-            <td>
-              <button type="button" class="btn badge text-bg-warning">Update</button>
-              <button type="button" class="btn badge text-bg-danger">Delete</button>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+      {% include "todo/tasks_table.html" %}
     </div>
   </div>
 </div>

@@ -1,0 +1,28 @@
+    <form action="{% url "filter" %}" method="get">
+
+        <div class="d-flex">
+          <h3>Filters:</h3>
+          <button type="button" class="btn badge text-bg-primary ms-auto" data-bs-toggle="modal" data-bs-target="#addTaskModal">
+            Add +
+          </button>
+        </div>
+        <hr>
+
+        <div>
+          <p>Task Status:</p>
+          <select name="status" class="form-select">
+            <option value="" {% if request.GET.status == "" %}selected{% endif %}>Select status..</option>
+            <option value="TD" {% if request.GET.status == "TD" %}selected{% endif %}>todo</option>
+            <option value="IP" {% if request.GET.status == "IP" %}selected{% endif %}>in-progress</option>
+            <option value="DN" {% if request.GET.status == "DN" %}selected{% endif %}>done</option>
+          </select>
+
+          <hr>
+        </div>
+
+        <div>
+          <button type="submit" class="btn btn-success">Find</button>
+          <button type="button" class="btn btn-danger" onclick="window.location.href='{% url 'home' %}'">Clear Filter</button>
+        </div>
+
+    </form>
