@@ -2,6 +2,7 @@ from django.shortcuts import render, HttpResponse, redirect, get_object_or_404
 from todo.models import Todo
 from todo.forms import AddTodoForm, UpdateTodoForm
 from django.contrib import messages
+from django.db.models import Q
 
 
 # Create your views here.
@@ -53,4 +54,19 @@ def delete_task(request, pk):
     if request.method == "POST":
         task.delete()
         messages.success(request, f"Task `{task.title}` Deleted Successfully.")
+    return redirect("home")
+
+
+def search(request):
+    if request.method == "GET":
+        key = request.GET.get("q")
+
+        STATUS = {"todo": "TD", "in-progress": "IP", "done": "Done"}
+
+        tasks = Todo.objects.filter(Q(title__icontains=key) | Q(status__icontains=STATUS[key.lower()]))
+        form = AddTodoForm()
+        update_forms = {task.id: UpdateTodoForm(instance=task) for task in tasks}
+        context = {"tasks": tasks, "form": form, "update_forms": update_forms}
+
+        return render(request, "todo/index.html", context=context)
     return redirect("home")
