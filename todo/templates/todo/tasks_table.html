@@ -8,28 +8,27 @@
   </thead>
   <tbody>
     {% for task in tasks %}
-    <tr>
-      <td>{{ forloop.counter }}</td>
-      <td>{{ task.title }}</td>
-      <td>
-        {% if task.get_status_display == 'todo' %}
-        <span class="badge text-bg-danger">{{task.get_status_display}}</span>
-        {% elif task.get_status_display == 'in-progress' %}
-        <span class="badge text-bg-warning">{{task.get_status_display}}</span>
-        {% else %}
-        <span class="badge text-bg-success">{{task.get_status_display}}</span>
-        {% endif %}
-      </td>
-      <td>{{ task.due_date }}</td>
-      <td>
-        <button type="button" class="btn badge text-bg-warning" data-bs-toggle="modal" data-bs-target="#updateTaskModal-{{task.id}}">Update</button>
-        <button type="button" class="btn badge text-bg-danger" data-bs-toggle="modal" data-bs-target="#deleteTaskModal-{{task.id}}">Delete</button>
-      </td>
-    </tr>
+      <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ task.title }}</td>
+        <td>
+          {% if task.get_status_display == 'todo' %}
+            <span class="badge text-bg-danger">{{ task.get_status_display }}</span>
+          {% elif task.get_status_display == 'in-progress' %}
+            <span class="badge text-bg-warning">{{ task.get_status_display }}</span>
+          {% else %}
+            <span class="badge text-bg-success">{{ task.get_status_display }}</span>
+          {% endif %}
+        </td>
+        <td>{{ task.due_date }}</td>
+        <td>
+          <button type="button" class="btn badge text-bg-warning" data-bs-toggle="modal" data-bs-target="#updateTaskModal-{{ task.id }}">Update</button>
+          <button type="button" class="btn badge text-bg-danger" data-bs-toggle="modal" data-bs-target="#deleteTaskModal-{{ task.id }}">Delete</button>
+        </td>
+      </tr>
 
-    {% include "todo/update_task.html" %}
-    {% include "todo/delete_task.html" %}
-    
+      {% include 'todo/update_task.html' %}
+      {% include 'todo/delete_task.html' %}
     {% endfor %}
   </tbody>
 </table>

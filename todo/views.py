@@ -20,7 +20,15 @@ def filter(request):
 
         tasks = Todo.objects.filter(status=filter)
 
-        context = {"tasks": tasks, "filter": filter}
+        form = AddTodoForm()
+        update_forms = {task.id: UpdateTodoForm(instance=task) for task in tasks}
+        context = {
+            "tasks": tasks,
+            "form": form,
+            "update_forms": update_forms,
+            "filter": filter,
+        }
+        print(filter)
         return render(request, "todo/index.html", context=context)
     return redirect("home")
 
@@ -59,14 +67,31 @@ def delete_task(request, pk):
 
 def search(request):
     if request.method == "GET":
-        key = request.GET.get("q")
-
-        STATUS = {"todo": "TD", "in-progress": "IP", "done": "Done"}
-
-        tasks = Todo.objects.filter(Q(title__icontains=key) | Q(status__icontains=STATUS[key.lower()]))
+        key = request.GET.get("q", "").strip()  # Safely get and strip whitespace
         form = AddTodoForm()
-        update_forms = {task.id: UpdateTodoForm(instance=task) for task in tasks}
-        context = {"tasks": tasks, "form": form, "update_forms": update_forms}
 
-        return render(request, "todo/index.html", context=context)
+        STATUS = {
+            "todo": "TD",
+            "in-progress": "IP",
+            "done": "DN",  # Correct to match your template value "DN"
+        }
+
+        status_key = STATUS.get(key.lower(), "")
+
+        if key:
+            tasks = Todo.objects.filter(
+                Q(title__icontains=key) | Q(status__iexact=status_key)
+            )
+        else:
+            tasks = Todo.objects.none()  # Or return all, depending on your intent
+
+        update_forms = {task.id: UpdateTodoForm(instance=task) for task in tasks}
+
+        context = {
+            "tasks": tasks,
+            "form": form,
+            "update_forms": update_forms,
+        }
+        return render(request, "todo/index.html", context)
+
     return redirect("home")
